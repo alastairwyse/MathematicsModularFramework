@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ModuleGraph>
+  <AssemblyPath>C:\Modules\Assemblies</AssemblyPath>
+  <EndPointModules>
+    <Module>
+      <Id>1</Id>
+      <Type>MathematicsModularFramework.UnitTests.TestModules.Module1_0</Type>
+      <Assembly>MathematicsModularFramework.UnitTests.TestModules.dll</Assembly>
+      <InputSlots>
+        <InputSlot>
+          <Name>Input1</Name>
+          <SlotLink>
+            <OutputSlotName>Output1</OutputSlotName>
+            <Module>
+              <Id>2</Id>
+              <Type>MathematicsModularFramework.UnitTests.TestModules.Module0_1</Type>
+              <Assembly>MathematicsModularFramework.UnitTests.TestModules.dll</Assembly>
+              <InputSlots/>
+            </Module>
+          </SlotLink>
+        </InputSlot>
+      </InputSlots>
+    </Module>
+    <Module>
+      <Id>3</Id>
+      <Type>MathematicsModularFramework.UnitTests.TestModules.Module1_0</Type>
+      <Assembly>MathematicsModularFramework.UnitTests.TestModules.dll</Assembly>
+      <InputSlots>
+        <InputSlot>
+          <Name>Input1</Name>
+          <SlotLink>
+            <OutputSlotName>Output1</OutputSlotName>
+            <Module>
+              <Id>4</Id>
+              <Type>MathematicsModularFramework.UnitTests.TestModules.Module0_1</Type>
+              <Assembly>MathematicsModularFramework.UnitTests.TestModules.dll</Assembly>
+              <InputSlots/>
+            </Module>
+          </SlotLink>
+        </InputSlot>
+      </InputSlots>
+    </Module>
+  </EndPointModules>
+</ModuleGraph>

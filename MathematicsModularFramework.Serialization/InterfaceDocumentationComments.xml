@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<doc>
+  <assembly>
+    <name>MathematicsModularFramework.Serialization</name>
+  </assembly>
+  <members>
+    <member name="T:MathematicsModularFramework.Serialization.IDataSerializer">
+      <summary>
+        Defines methods for serializing and deserializing objects.
+      </summary>
+    </member>
+    <member name="M:MathematicsModularFramework.Serialization.IDataSerializer.DataTypeIsSupported(System.Type)">
+      <summary>
+        Checks whether serialization is supported for the specified data type.
+      </summary>
+      <param name="dataType">The data type to check.</param>
+      <returns>Whether serialization is supported for the specified data type.</returns>
+    </member>
+    <member name="M:MathematicsModularFramework.Serialization.IDataSerializer.SerializeDataValue(System.Type,System.Object,System.IO.StreamWriter)">
+      <summary>
+        Serializes the specified object to the specified stream writer.
+      </summary>
+      <param name="dataType">The data type that the object should be serialized as.</param>
+      <param name="dataValue">The object to serialize.</param>
+      <param name="streamWriter">The stream writer to serialize to.</param>
+    </member>
+    <member name="M:MathematicsModularFramework.Serialization.IDataSerializer.DeserializeDataValue(System.Type,System.IO.StreamReader)">
+      <summary>
+        Deserializes the specified object from the specified stream reader.
+      </summary>
+      <param name="dataType">The data type of the object.</param>
+      <param name="streamReader">The stream writer to deserialize from.</param>
+      <returns>The deserialized object.</returns>
+    </member>
+    <member name="T:MathematicsModularFramework.Serialization.IXmlDataSerializer">
+      <summary>
+        Defines methods for serializing and deserializing objects to and from an XML document.
+      </summary>
+    </member>
+    <member name="M:MathematicsModularFramework.Serialization.IXmlDataSerializer.SerializeData(System.Type,System.Object,System.Xml.XmlWriter)">
+      <summary>
+        Serializes the specified object to the specified XML writer.
+      </summary>
+      <param name="dataType">The data type that the object should be serialized as.</param>
+      <param name="dataValue">The object to serialize.</param>
+      <param name="xmlWriter">The XML writer to serialize to.</param>
+    </member>
+    <member name="M:MathematicsModularFramework.Serialization.IXmlDataSerializer.DeserializeDataValue(System.Type,System.Xml.XmlReader)">
+      <summary>
+        Deserializes the specified object from the specified XML reader.
+      </summary>
+      <param name="dataType">The data type of the object.</param>
+      <param name="xmlReader">The XML writer to deserialize from.</param>
+      <returns>The deserialized object.</returns>
+    </member>
+    <member name="T:MathematicsModularFramework.Serialization.IModuleGraphSerializer">
+      <summary>
+        Defines methods for serializing and deserializing module graphs.
+      </summary>
+    </member>
+    <member name="M:MathematicsModularFramework.Serialization.IModuleGraphSerializer.Serialize(MathematicsModularFramework.ModuleGraph)">
+      <summary>
+        Serializes the specified module graph to a string.
+      </summary>
+      <param name="moduleGraph">The module graph to serialize.</param>
+      <returns>The serialized module graph.</returns>
+    </member>
+    <member name="M:MathematicsModularFramework.Serialization.IModuleGraphSerializer.Serialize(MathematicsModularFramework.ModuleGraph,System.IO.StreamWriter)">
+      <summary>
+        Serializes the specified module graph to the specified stream writer.
+      </summary>
+      <param name="moduleGraph">The module graph to serialize.</param>
+      <param name="streamWriter">The stream writer to serialize to.</param>
+    </member>
+    <member name="M:MathematicsModularFramework.Serialization.IModuleGraphSerializer.Deserialize(System.String)">
+      <summary>
+        Deserializes a module graph from the specified string.
+      </summary>
+      <param name="serializedModuleGraph">The serialized module graph to deserialize.</param>
+      <returns>The module graph.</returns>
+    </member>
+    <member name="M:MathematicsModularFramework.Serialization.IModuleGraphSerializer.Deserialize(System.IO.StreamReader)">
+      <summary>
+        Deserializes a module graph from the specified stream reader.
+      </summary>
+      <param name="streamReader">The stream reader containing the serialized module graph.</param>
+      <returns>The module graph.</returns>
+    </member>
+  </members>
+</doc>

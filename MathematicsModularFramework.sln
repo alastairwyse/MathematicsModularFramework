@@ -1,0 +1,69 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathematicsModularFramework", "MathematicsModularFramework\MathematicsModularFramework.csproj", "{DDF1767E-2AC1-49BE-95B6-9BEEABF797D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathematicsModularFramework.UnitTests", "MathematicsModularFramework.UnitTests\MathematicsModularFramework.UnitTests.csproj", "{E20B01C7-934F-4B5D-9346-16440C5E46BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathematicsModularFramework.UnitTests.LoggingTests", "MathematicsModularFramework.UnitTests.LoggingTests\MathematicsModularFramework.UnitTests.LoggingTests.csproj", "{11EB9453-9D3D-4395-95D4-1FE6BF35B23E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathematicsModularFramework.Metrics", "MathematicsModularFramework.Metrics\MathematicsModularFramework.Metrics.csproj", "{07307A58-7934-4AA9-8CB7-782A8443A415}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathematicsModularFramework.UnitTests.MetricsTests", "MathematicsModularFramework.UnitTests.MetricsTests\MathematicsModularFramework.UnitTests.MetricsTests.csproj", "{151E3C7A-4F35-49E4-8390-BF64E7F64A38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathematicsModularFramework.UnitTests.TestModules", "MathematicsModularFramework.UnitTests.TestModules\MathematicsModularFramework.UnitTests.TestModules.csproj", "{BE1BF4AE-78E9-4968-BC3E-1C9898A7FA27}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathematicsModularFramework.Serialization", "MathematicsModularFramework.Serialization\MathematicsModularFramework.Serialization.csproj", "{42EA9BCF-8C3A-4037-AAD2-5B4CE8401EFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathematicsModularFramework.Serialization.UnitTests", "MathematicsModularFramework.Serialization.UnitTests\MathematicsModularFramework.Serialization.UnitTests.csproj", "{A88F27D1-B04A-4F53-B692-3D830F61D556}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3F142270-D5FB-4521-AC17-8FF011A8DE60}"
+	ProjectSection(SolutionItems) = preProject
+		SolutionInfo.cs = SolutionInfo.cs
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DDF1767E-2AC1-49BE-95B6-9BEEABF797D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDF1767E-2AC1-49BE-95B6-9BEEABF797D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDF1767E-2AC1-49BE-95B6-9BEEABF797D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDF1767E-2AC1-49BE-95B6-9BEEABF797D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E20B01C7-934F-4B5D-9346-16440C5E46BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E20B01C7-934F-4B5D-9346-16440C5E46BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E20B01C7-934F-4B5D-9346-16440C5E46BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E20B01C7-934F-4B5D-9346-16440C5E46BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11EB9453-9D3D-4395-95D4-1FE6BF35B23E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11EB9453-9D3D-4395-95D4-1FE6BF35B23E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11EB9453-9D3D-4395-95D4-1FE6BF35B23E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11EB9453-9D3D-4395-95D4-1FE6BF35B23E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07307A58-7934-4AA9-8CB7-782A8443A415}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07307A58-7934-4AA9-8CB7-782A8443A415}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07307A58-7934-4AA9-8CB7-782A8443A415}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07307A58-7934-4AA9-8CB7-782A8443A415}.Release|Any CPU.Build.0 = Release|Any CPU
+		{151E3C7A-4F35-49E4-8390-BF64E7F64A38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{151E3C7A-4F35-49E4-8390-BF64E7F64A38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{151E3C7A-4F35-49E4-8390-BF64E7F64A38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{151E3C7A-4F35-49E4-8390-BF64E7F64A38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE1BF4AE-78E9-4968-BC3E-1C9898A7FA27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE1BF4AE-78E9-4968-BC3E-1C9898A7FA27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE1BF4AE-78E9-4968-BC3E-1C9898A7FA27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE1BF4AE-78E9-4968-BC3E-1C9898A7FA27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42EA9BCF-8C3A-4037-AAD2-5B4CE8401EFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42EA9BCF-8C3A-4037-AAD2-5B4CE8401EFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42EA9BCF-8C3A-4037-AAD2-5B4CE8401EFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42EA9BCF-8C3A-4037-AAD2-5B4CE8401EFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A88F27D1-B04A-4F53-B692-3D830F61D556}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A88F27D1-B04A-4F53-B692-3D830F61D556}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A88F27D1-B04A-4F53-B692-3D830F61D556}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A88F27D1-B04A-4F53-B692-3D830F61D556}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

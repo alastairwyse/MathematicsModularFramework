@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A88F27D1-B04A-4F53-B692-3D830F61D556}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MathematicsModularFramework.Serialization.UnitTests</RootNamespace>
+    <AssemblyName>MathematicsModularFramework.Serialization.UnitTests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FrameworkAbstraction, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\FrameworkAbstraction.1.5.0.0\lib\net40\FrameworkAbstraction.dll</HintPath>
+    </Reference>
+    <Reference Include="NMock2">
+      <HintPath>..\Referenced Libraries\NMock2.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=3.4.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NUnit.3.4.1\lib\net40\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="ModuleGraphXmlSerializerTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XmlDataSerializerTests.cs" />
+    <Compile Include="XmlReaderElementConsumeAction.cs" />
+    <Compile Include="XmlWriterParameterWriteAction.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MathematicsModularFramework.Serialization\MathematicsModularFramework.Serialization.csproj">
+      <Project>{42ea9bcf-8c3a-4037-aad2-5b4ce8401efa}</Project>
+      <Name>MathematicsModularFramework.Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MathematicsModularFramework.UnitTests.TestModules\MathematicsModularFramework.UnitTests.TestModules.csproj">
+      <Project>{be1bf4ae-78e9-4968-bc3e-1c9898a7fa27}</Project>
+      <Name>MathematicsModularFramework.UnitTests.TestModules</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MathematicsModularFramework.UnitTests\MathematicsModularFramework.UnitTests.csproj">
+      <Project>{e20b01c7-934f-4b5d-9346-16440c5e46bb}</Project>
+      <Name>MathematicsModularFramework.UnitTests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MathematicsModularFramework\MathematicsModularFramework.csproj">
+      <Project>{ddf1767e-2ac1-49be-95b6-9beeabf797d5}</Project>
+      <Name>MathematicsModularFramework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\GraphWithLinkedModuleWithSerializedInputData.xml" />
+    <Content Include="Resources\GraphWithModuleWithSerializedInputData.xml" />
+    <Content Include="Resources\GraphWithModuleWithSerializedInputDataAndDataTypeFromExternalAssembly.xml" />
+    <Content Include="Resources\ScenarioTest10Graph.xml" />
+    <Content Include="Resources\ScenarioTest11Graph.xml" />
+    <Content Include="Resources\ScenarioTest1Graph.xml" />
+    <Content Include="Resources\ScenarioTest2Graph.xml" />
+    <Content Include="Resources\ScenarioTest3Graph.xml" />
+    <Content Include="Resources\ScenarioTest4Graph.xml" />
+    <Content Include="Resources\ScenarioTest5Graph.xml" />
+    <Content Include="Resources\ScenarioTest6Graph.xml" />
+    <Content Include="Resources\ScenarioTest7Graph.xml" />
+    <Content Include="Resources\ScenarioTest8Graph.xml" />
+    <Content Include="Resources\ScenarioTest9Graph.xml" />
+    <Content Include="Resources\EmptyGraph.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

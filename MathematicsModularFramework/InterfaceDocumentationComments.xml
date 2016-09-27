@@ -1,0 +1,93 @@
+﻿<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>MathematicsModularFramework</name>
+  </assembly>
+  <members>
+    <member name="T:MathematicsModularFramework.IModule">
+      <summary>
+        Defines methods for a 'module' which represents a granular until of work within the framework.  The results or outputs of one module can be passed as inputs to subsequent modules.
+      </summary>
+    </member>
+    <member name="M:MathematicsModularFramework.IModule.GetInputSlot(System.String)">
+      <summary>
+        Returns the input slot on the module identified by the specified name.
+      </summary>
+      <param name="name">The name of the input slot.</param>
+      <returns>The input slot.</returns>
+    </member>
+    <member name="M:MathematicsModularFramework.IModule.GetOutputSlot(System.String)">
+      <summary>
+        Returns the output slot on the module identified by the specified name.
+      </summary>
+      <param name="name">The name of the output slot.</param>
+      <returns>The output slot.</returns>
+    </member>
+    <member name="M:MathematicsModularFramework.IModule.Process">
+      <summary>
+        Executes the module.
+      </summary>
+    </member>
+    <member name="P:MathematicsModularFramework.IModule.Description">
+      <summary>
+        A description of the module and its function.
+      </summary>
+    </member>
+    <member name="P:MathematicsModularFramework.IModule.Inputs">
+      <summary>
+        The set of input slots on the module, which accept input data used for processing.
+      </summary>
+    </member>
+    <member name="P:MathematicsModularFramework.IModule.Outputs">
+      <summary>
+        The set of output slots on this module, which hold output data (results) produced by the processing of this module.
+      </summary>
+    </member>
+    <member name="P:MathematicsModularFramework.IModule.Processed">
+      <summary>
+        Indicates whether the module has been executed or not.
+      </summary>
+    </member>
+    <member name="P:MathematicsModularFramework.IModule.Logger">
+      <summary>
+        The logger to write log events to.
+      </summary>
+    </member>
+    <member name="P:MathematicsModularFramework.IModule.MetricLogger">
+      <summary>
+        The metric logger to write metric and instrumentation events to.
+      </summary>
+    </member>
+    <member name="M:MathematicsModularFramework.ValidationError.ToString">
+      <summary>
+        Serializes the validation error to a human-readable string.
+      </summary>
+    </member>
+    <member name="T:MathematicsModularFramework.IModuleGraphProcessor">
+      <summary>
+        Defines methods associated with executing the computational flow defined by a module graph.
+      </summary>
+    </member>
+    <member name="M:MathematicsModularFramework.IModuleGraphProcessor.Process(MathematicsModularFramework.ModuleGraph,System.Boolean)">
+      <summary>
+        Executes the computational flow defined by the specified module graph.
+      </summary>
+      <param name="moduleGraph">The module graph to process.</param>
+      <param name="allowEmptyModuleInputSlots">Whether empty input slots on modules are permitted (i.e. input slots which have no data assigned to them via a slot link).  If set to false, an exception will be thrown if an empty input slot is encountered.</param>
+    </member>
+    <member name="M:MathematicsModularFramework.IModuleGraphProcessor.Copy(MathematicsModularFramework.ModuleGraph)">
+      <summary>
+        Creates an identical copy of the specified module graph.
+      </summary>
+      <param name="moduleGraph">The module graph to copy.</param>
+      <returns>The copy of the module graph.</returns>
+    </member>
+    <member name="M:MathematicsModularFramework.IModuleGraphProcessor.Validate(MathematicsModularFramework.ModuleGraph)">
+      <summary>
+        Validates the specified module graph.
+      </summary>
+      <param name="moduleGraph">The module graph to validate.</param>
+      <returns>A collection of any validation errors encountered.</returns>
+    </member>
+  </members>
+</doc>
