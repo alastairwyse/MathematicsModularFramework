@@ -29,6 +29,7 @@ namespace MathematicsModularFramework.Serialization
     /// <summary>
     /// Serializes and deserializes a module graph to and from an XML document.
     /// </summary>
+    /// <remarks>This class has a dependency on the XML schema file 'ModuleGraph.xsd'.  When executing, instances of the class expect to find 'ModuleGraph.xsd' in a folder called 'Resources' below the folder containing MathematicsModularFramework.Serialization.dll.  When installing MathematicsModularFramework from NuGet, 'ModuleGraph.xsd' is automatically copied to a 'Resources' folder in the client project.  However, if the ModuleGraphXmlSerializer class is used in that client project, the 'Copy to Output Directory' option in the 'ModuleGraph.xsd' Visual Studio file properties must by set to 'Copy if newer' or 'Always'.</remarks>
     public class ModuleGraphXmlSerializer : IModuleGraphSerializer
     {
         /// <summary>The name of the root element in the XML document written and read by the class.</summary>
