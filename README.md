@@ -16,4 +16,3 @@ Sample implementation and use case examples are provided in the [SimpleML](https
 
 ##### Notes
 - After opening the solution in Visual Studio, the referenced NuGet packages should be restored using the 'Restore' button in the 'Manage NuGet Packages' window.
-- The Serialization.ModuleGraphXmlSerializer class has a dependency on the XML schema file 'ModuleGraph.xsd'.  When executing, instances of this class expect to find 'ModuleGraph.xsd' in a folder called 'Resources' below the folder containing MathematicsModularFramework.Serialization.dll.  After installing the package 'ModuleGraph.xsd' is automatically copied to a 'Resources' folder in the client project.  However, if the ModuleGraphXmlSerializer class is used in that client project, the 'Copy to Output Directory' option in the 'ModuleGraph.xsd' file properties must be set to 'Copy if newer' or 'Always'.
