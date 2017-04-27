@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2016 Alastair Wyse (http://www.oraclepermissiongenerator.net/mathematicsmodularframework/)
+ * Copyright 2017 Alastair Wyse (http://www.oraclepermissiongenerator.net/mathematicsmodularframework/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,9 @@ namespace MathematicsModularFramework
     {
         /// <include file='InterfaceDocumentationComments.xml' path='doc/members/member[@name="M:MathematicsModularFramework.IModuleGraphProcessor.Process(MathematicsModularFramework.ModuleGraph,System.Boolean)"]/*'/>
         void Process(ModuleGraph moduleGraph, Boolean allowEmptyModuleInputSlots);
+
+        /// <include file='InterfaceDocumentationComments.xml' path='doc/members/member[@name="M:MathematicsModularFramework.IModuleGraphProcessor.CancelProcessing"]/*'/>
+        void CancelProcessing();
 
         /// <include file='InterfaceDocumentationComments.xml' path='doc/members/member[@name="M:MathematicsModularFramework.IModuleGraphProcessor.Copy(MathematicsModularFramework.ModuleGraph)"]/*'/>
         ModuleGraph Copy(ModuleGraph moduleGraph);

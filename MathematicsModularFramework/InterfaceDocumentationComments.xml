@@ -58,6 +58,11 @@
         The metric logger to write metric and instrumentation events to.
       </summary>
     </member>
+    <member name="P:MathematicsModularFramework.IModule.CancellationToken">
+      <summary>
+        A cancellation token, used to notify that the module's processing should be cancelled.
+      </summary>
+    </member>
     <member name="M:MathematicsModularFramework.ValidationError.ToString">
       <summary>
         Serializes the validation error to a human-readable string.
@@ -74,6 +79,11 @@
       </summary>
       <param name="moduleGraph">The module graph to process.</param>
       <param name="allowEmptyModuleInputSlots">Whether empty input slots on modules are permitted (i.e. input slots which have no data assigned to them via a slot link).  If set to false, an exception will be thrown if an empty input slot is encountered.</param>
+    </member>
+    <member name="M:MathematicsModularFramework.IModuleGraphProcessor.CancelProcessing">
+      <summary>
+        Cancels the computational flow defined by the module graph which is currently executing.
+      </summary>
     </member>
     <member name="M:MathematicsModularFramework.IModuleGraphProcessor.Copy(MathematicsModularFramework.ModuleGraph)">
       <summary>

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2016 Alastair Wyse (http://www.oraclepermissiongenerator.net/mathematicsmodularframework/)
+ * Copyright 2017 Alastair Wyse (http://www.oraclepermissiongenerator.net/mathematicsmodularframework/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using NUnit.Framework;
 using NMock2;
 using MathematicsModularFramework;
+using MathematicsModularFramework.UnitTests.TestModules;
 
 namespace MathematicsModularFramework.UnitTests
 {
@@ -37,6 +39,12 @@ namespace MathematicsModularFramework.UnitTests
         {
             testModuleGraphProcessor = new ModuleGraphProcessor();
             mockery = new Mockery();
+        }
+
+        [TearDown]
+        protected void TearDown()
+        {
+            testModuleGraphProcessor.Dispose();
         }
 
         /// <summary>
@@ -62,7 +70,7 @@ namespace MathematicsModularFramework.UnitTests
                 testModuleGraphProcessor.Process(testModuleGraph, false);
             });
 
-            Assert.That(e.Message, NUnit.Framework.Does.StartWith("Input slot 'DataInput' on module 'MockObjectType1' does not have any data assigned to it."));
+            Assert.That(e.Message, NUnit.Framework.Does.StartWith("Input slot 'DataInput' on module '" + mockModule.GetType().Name + "' does not have any data assigned to it."));
             Assert.AreSame(testInputSlot, e.InputSlot);
             mockery.VerifyAllExpectationsHaveBeenMet();
         }
@@ -85,6 +93,7 @@ namespace MathematicsModularFramework.UnitTests
                 Expect.Once.On(mockModule).GetProperty("Inputs").Will(Return.Value(testInputSlotList));
                 Expect.Once.On(mockModule).SetProperty("Logger");
                 Expect.Once.On(mockModule).SetProperty("MetricLogger");
+                Expect.Once.On(mockModule).SetProperty("CancellationToken");
                 Expect.Once.On(mockModule).Method("Process").WithNoArguments();
                 Expect.Once.On(mockModule).GetProperty("Outputs").Will(Return.Value(new List<OutputSlot>()));
             }
@@ -121,10 +130,12 @@ namespace MathematicsModularFramework.UnitTests
                 Expect.Once.On(firstMockModule).GetProperty("Inputs").Will(Return.Value(new List<InputSlot>()));
                 Expect.Once.On(firstMockModule).SetProperty("Logger");
                 Expect.Once.On(firstMockModule).SetProperty("MetricLogger");
+                Expect.Once.On(firstMockModule).SetProperty("CancellationToken");
                 Expect.Once.On(firstMockModule).Method("Process").WithNoArguments();
                 Expect.Once.On(firstMockModule).GetProperty("Outputs").Will(Return.Value(firstModuleOutputSlotList));
                 Expect.Once.On(secondMockModule).SetProperty("Logger");
                 Expect.Once.On(secondMockModule).SetProperty("MetricLogger");
+                Expect.Once.On(secondMockModule).SetProperty("CancellationToken");
                 Expect.Once.On(secondMockModule).Method("Process").WithNoArguments();
                 Expect.Once.On(secondMockModule).GetProperty("Outputs").Will(Return.Value(new List<OutputSlot>()));
             }
@@ -185,8 +196,125 @@ namespace MathematicsModularFramework.UnitTests
                 testModuleGraphProcessor.Process(testModuleGraph, false);
             });
 
-            Assert.That(e.Message, NUnit.Framework.Does.StartWith("Graph contains a circular reference involving module 'MockObjectType1'."));
+            Assert.That(e.Message, NUnit.Framework.Does.StartWith("Graph contains a circular reference involving module '" + firstMockModule.GetType().Name + "'."));
             mockery.VerifyAllExpectationsHaveBeenMet();
+        }
+
+        /// <summary>
+        /// Tests that an exception is thrown if the Process() method is called after the object has been disposed.
+        /// </summary>
+        [Test]
+        public void Process_ObjectDisposed()
+        {
+            ModuleGraph testModuleGraph = new ModuleGraph();
+
+            ObjectDisposedException e = Assert.Throws<ObjectDisposedException>(delegate
+            {
+                testModuleGraphProcessor.Dispose();
+                testModuleGraphProcessor.Process(testModuleGraph, false);
+            });
+
+            Assert.AreEqual(testModuleGraphProcessor.GetType().Name, e.ObjectName);
+        }
+
+        /// <summary>
+        /// Tests that an exception is thrown if the CancelProcessing() method is called after the object has been disposed.
+        /// </summary>
+        [Test]
+        public void CancelProcessing_ObjectDisposed()
+        {
+            ModuleGraph testModuleGraph = new ModuleGraph();
+
+            ObjectDisposedException e = Assert.Throws<ObjectDisposedException>(delegate
+            {
+                testModuleGraphProcessor.Dispose();
+                testModuleGraphProcessor.CancelProcessing();
+            });
+
+            Assert.AreEqual(testModuleGraphProcessor.GetType().Name, e.ObjectName);
+        }
+
+        /// <summary>
+        /// Success tests for the CancelProcessing() method.
+        /// </summary>
+        [Test]
+        public void CancelProcessing()
+        {
+            // Test that the CancellationToken is not set as cancelled when CancelProcessing() is not called.
+            CancellableModule cancellableModule = new CancellableModule();
+            ModuleGraph testModuleGraph = new ModuleGraph();
+            testModuleGraph.AddModule(cancellableModule);
+            
+            using (AutoResetEvent cancellationThreadSignal = new AutoResetEvent(false))
+            {
+                cancellableModule.GetInputSlot("CancellationThreadSignal").DataValue = cancellationThreadSignal;
+                cancellableModule.GetInputSlot("ThrowExceptionIfCancelledSwitch").DataValue = false;
+                Thread cancellationThread = new Thread
+                (() =>
+                {
+                    cancellationThreadSignal.WaitOne();
+                    cancellationThreadSignal.Set();
+                }
+                );
+                cancellationThread.Start();
+                testModuleGraphProcessor.Process(testModuleGraph, false);
+            }
+            
+            Boolean cancelWasCalledFlag = (Boolean)cancellableModule.GetOutputSlot("CancelWasCalled").DataValue;
+            Assert.AreEqual(false, cancelWasCalledFlag);
+
+
+            // Test that the CancellationToken is set as cancelled when CancelProcessing() is called.
+            cancellableModule = new CancellableModule();
+            testModuleGraph = new ModuleGraph();
+            testModuleGraph.AddModule(cancellableModule);
+
+            using(AutoResetEvent cancellationThreadSignal = new AutoResetEvent(false))
+            {
+                cancellableModule.GetInputSlot("CancellationThreadSignal").DataValue = cancellationThreadSignal;
+                cancellableModule.GetInputSlot("ThrowExceptionIfCancelledSwitch").DataValue = false;
+                Thread cancellationThread = new Thread
+                (() =>
+                    {
+                        cancellationThreadSignal.WaitOne();
+                        testModuleGraphProcessor.CancelProcessing();
+                        cancellationThreadSignal.Set();
+                    }
+                );
+                cancellationThread.Start();
+                testModuleGraphProcessor.Process(testModuleGraph, false);
+            }
+
+            cancelWasCalledFlag = (Boolean)cancellableModule.GetOutputSlot("CancelWasCalled").DataValue;
+            Assert.AreEqual(true, cancelWasCalledFlag);
+
+
+            // Test that an OperationCanceledException is thrown if the module code calls method ThrowIfCancellationRequested() after CancelProcessing() is called.
+            cancellableModule = new CancellableModule();
+            testModuleGraph = new ModuleGraph();
+            testModuleGraph.AddModule(cancellableModule);
+
+            using (AutoResetEvent cancellationThreadSignal = new AutoResetEvent(false))
+            {
+                cancellableModule.GetInputSlot("CancellationThreadSignal").DataValue = cancellationThreadSignal;
+                cancellableModule.GetInputSlot("ThrowExceptionIfCancelledSwitch").DataValue = true;
+                Thread cancellationThread = new Thread
+                (() =>
+                {
+                    cancellationThreadSignal.WaitOne();
+                    testModuleGraphProcessor.CancelProcessing();
+                    cancellationThreadSignal.Set();
+                }
+                );
+                cancellationThread.Start();
+                OperationCanceledException e = Assert.Throws<OperationCanceledException>(delegate
+                {
+                    testModuleGraphProcessor.Process(testModuleGraph, false);
+                });
+            }
+
+            cancelWasCalledFlag = (Boolean)cancellableModule.GetOutputSlot("CancelWasCalled").DataValue;
+            Assert.AreEqual(true, cancelWasCalledFlag);
         }
 
         /// <summary>
@@ -255,6 +383,51 @@ namespace MathematicsModularFramework.UnitTests
             Assert.AreEqual(1, errors.Count);
             Assert.AreEqual(typeof(UnlinkedOutputSlotValidationError), errors[0].GetType());
             Assert.AreSame(moduleOutputSlot, ((UnlinkedOutputSlotValidationError)errors[0]).OutputSlot);
+        }
+
+        /// <summary>
+        /// Tests that an exception is thrown if the Validate() method is called after the object has been disposed.
+        /// </summary>
+        [Test]
+        public void Validate_ObjectDisposed()
+        {
+            ModuleGraph testModuleGraph = new ModuleGraph();
+
+            ObjectDisposedException e = Assert.Throws<ObjectDisposedException>(delegate
+            {
+                testModuleGraphProcessor.Dispose();
+                testModuleGraphProcessor.Validate(testModuleGraph);
+            });
+
+            Assert.AreEqual(testModuleGraphProcessor.GetType().Name, e.ObjectName);
+        }
+
+        /// <summary>
+        /// Tests that an exception is thrown if the Copy() method is called after the object has been disposed.
+        /// </summary>
+        [Test]
+        public void Copy_ObjectDisposed()
+        {
+            ModuleGraph testModuleGraph = new ModuleGraph();
+
+            ObjectDisposedException e = Assert.Throws<ObjectDisposedException>(delegate
+            {
+                testModuleGraphProcessor.Dispose();
+                testModuleGraphProcessor.Copy(testModuleGraph);
+            });
+
+            Assert.AreEqual(testModuleGraphProcessor.GetType().Name, e.ObjectName);
+        }
+
+        /// <summary>
+        /// Success tests for the IsDisposed property.
+        /// </summary>
+        [Test]
+        public void IsDisposed()
+        {
+            Assert.AreEqual(false, testModuleGraphProcessor.IsDisposed);
+            testModuleGraphProcessor.Dispose();
+            Assert.AreEqual(true, testModuleGraphProcessor.IsDisposed);
         }
     }
 }

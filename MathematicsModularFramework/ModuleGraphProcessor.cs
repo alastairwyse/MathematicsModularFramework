@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2016 Alastair Wyse (http://www.oraclepermissiongenerator.net/simpleml/)
+ * Copyright 2017 Alastair Wyse (http://www.oraclepermissiongenerator.net/simpleml/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using ApplicationLogging;
 using ApplicationMetrics;
 using MathematicsModularFramework.Metrics;
@@ -27,7 +28,7 @@ namespace MathematicsModularFramework
     /// <summary>
     /// Provides methods associated with executing the computational flow defined by a module graph.
     /// </summary>
-    public class ModuleGraphProcessor : IModuleGraphProcessor
+    public class ModuleGraphProcessor : IModuleGraphProcessor, IDisposable
     {
         /// <summary>Maintains a list of mappings between a module in a source graph, and its equivalent module in a copy of that graph.</summary>
         private Dictionary<IModule, IModule> copiedGraphModuleMap;
@@ -39,7 +40,22 @@ namespace MathematicsModularFramework
         private LoggingUtilities loggingUtilities;
         /// <summary>Utility class used to write metric events.</summary>
         private MetricsUtilities metricsUtilities;
+        /// <summary>Passes CancellationTokens to modules being processed, and allows for cancelling of processing.</summary>
+        private CancellationTokenSource cancellationTokenSource;
+        /// <summary>Indicates whether the object has been disposed.</summary>
+        protected bool disposed;
         
+        /// <summary>
+        /// Indicates whether the ModuleGraphProcessor has been disposed.
+        /// </summary>
+        public Boolean IsDisposed
+        {
+            get
+            {
+                return disposed;
+            }
+        }
+
         /// <summary>
         /// Initialises a new instance of the MathematicsModularFramework.ModuleGraphProcessor class.
         /// </summary>
@@ -50,6 +66,8 @@ namespace MathematicsModularFramework
             metricLogger = new NullMetricLogger();
             loggingUtilities = new LoggingUtilities(logger);
             metricsUtilities = new MetricsUtilities(metricLogger);
+            cancellationTokenSource = new CancellationTokenSource();
+            disposed = false;
         }
 
         /// <summary>
@@ -91,6 +109,8 @@ namespace MathematicsModularFramework
         /// <include file='InterfaceDocumentationComments.xml' path='doc/members/member[@name="M:MathematicsModularFramework.IModuleGraphProcessor.Process(MathematicsModularFramework.ModuleGraph,System.Boolean)"]/*'/>
         public void Process(ModuleGraph moduleGraph, Boolean allowEmptyModuleInputSlots)
         {
+            ThrowExceptionIfDisposed();
+
             // Define all processing actions to pass to the ModuleGraphRecurser class
             Action<IModule> circularReferenceAction = (IModule module) => { throw new Exception("Graph contains a circular reference involving module '" + module.GetType().FullName + "'."); };
             Action<InputSlot> unlinkedInputSlotAction = (InputSlot inputSlot) => { };
@@ -107,13 +127,21 @@ namespace MathematicsModularFramework
             {
                 module.Logger = logger;
                 module.MetricLogger = metricLogger;
+                module.CancellationToken = cancellationTokenSource.Token;
                 loggingUtilities.Log(this, LogLevel.Information, "Processing module '" + module.GetType().FullName + "'.");
                 metricsUtilities.Begin(new ModuleProcessingTime());
                 try
                 {
                     module.Process();
                 }
-                catch (Exception e)
+                catch (OperationCanceledException)
+                {
+                    metricsUtilities.Increment(new ModuleGraphProcessingCancelled());
+                    loggingUtilities.Log(this, LogLevel.Information, "Processing of module '" + module.GetType().FullName + "' cancelled.");
+                    metricsUtilities.CancelBegin(new ModuleProcessingTime());
+                    throw;
+                }
+                catch (Exception)
                 {
                     metricsUtilities.CancelBegin(new ModuleProcessingTime());
                     throw;
@@ -152,7 +180,7 @@ namespace MathematicsModularFramework
             {
                 processRecurser.Recurse(moduleGraph, true);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 metricsUtilities.CancelBegin(new ModuleGraphProcessingTime());
                 throw;
@@ -162,9 +190,18 @@ namespace MathematicsModularFramework
             loggingUtilities.Log(this, LogLevel.Information, "Module graph processing completed.");
         }
 
+        /// <include file='InterfaceDocumentationComments.xml' path='doc/members/member[@name="M:MathematicsModularFramework.IModuleGraphProcessor.CancelProcessing"]/*'/>
+        public void CancelProcessing()
+        {
+            ThrowExceptionIfDisposed();
+            cancellationTokenSource.Cancel();
+        }
+
         /// <include file='InterfaceDocumentationComments.xml' path='doc/members/member[@name="M:MathematicsModularFramework.IModuleGraphProcessor.Copy(MathematicsModularFramework.ModuleGraph)"]/*'/>
         public ModuleGraph Copy(ModuleGraph moduleGraph)
         {
+            ThrowExceptionIfDisposed();
+
             ModuleGraph destinationModuleGraph = new ModuleGraph();
 
             metricsUtilities.Begin(new ModuleGraphCopyingTime());
@@ -176,7 +213,7 @@ namespace MathematicsModularFramework
                     CopyModule(currentModule, moduleGraph, destinationModuleGraph);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 metricsUtilities.CancelBegin(new ModuleGraphCopyingTime());
                 throw;
@@ -190,6 +227,8 @@ namespace MathematicsModularFramework
         /// <include file='InterfaceDocumentationComments.xml' path='doc/members/member[@name="M:MathematicsModularFramework.IModuleGraphProcessor.Validate(MathematicsModularFramework.ModuleGraph)"]/*'/>
         public List<ValidationError> Validate(ModuleGraph moduleGraph)
         {
+            ThrowExceptionIfDisposed();
+
             List<ValidationError> validationErrors = new List<ValidationError>();
 
             if (moduleGraph.EndPoints.Count<IModule>() == 0)
@@ -266,5 +305,60 @@ namespace MathematicsModularFramework
 
             return destinationModule;
         }
+
+        /// <summary>
+        /// Throws an ObjectDisposedException if Dispose() has been called on the object.
+        /// </summary>
+        private void ThrowExceptionIfDisposed()
+        {
+            if (disposed == true)
+            {
+                throw new ObjectDisposedException(this.GetType().Name);
+            }
+        }
+
+        #region Finalize / Dispose Methods
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the ModuleGraphProcessor.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        #pragma warning disable 1591
+        ~ModuleGraphProcessor()
+        {
+            Dispose(false);
+        }
+        #pragma warning restore 1591
+
+        /// <summary>
+        /// Provides a method to free unmanaged resources used by this class.
+        /// </summary>
+        /// <param name="disposing">Whether the method is being called as part of an explicit Dispose routine, and hence whether managed resources should also be freed.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    // Free other state (managed objects).
+                    if (cancellationTokenSource != null)
+                    {
+                        cancellationTokenSource.Dispose();
+                    }
+                }
+                // Free your own state (unmanaged objects).
+
+                // Set large fields to null.
+
+                disposed = true;
+            }
+        }
+
+        #endregion
     }
 }

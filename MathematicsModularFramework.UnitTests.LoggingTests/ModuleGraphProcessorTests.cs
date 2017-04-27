@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2016 Alastair Wyse (http://www.oraclepermissiongenerator.net/mathematicsmodularframework/)
+ * Copyright 2017 Alastair Wyse (http://www.oraclepermissiongenerator.net/mathematicsmodularframework/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using NUnit.Framework;
 using NMock2;
 using NMock2.Matchers;
@@ -42,6 +43,12 @@ namespace MathematicsModularFramework.UnitTests.LoggingTests
             mockery = new Mockery();
             mockApplicationLogger = mockery.NewMock<IApplicationLogger>();
             testModuleGraphProcessor = new ModuleGraphProcessor(mockApplicationLogger);
+        }
+
+        [TearDown]
+        protected void TearDown()
+        {
+            testModuleGraphProcessor.Dispose();
         }
 
         /// <summary>
@@ -72,6 +79,45 @@ namespace MathematicsModularFramework.UnitTests.LoggingTests
             }
 
             testModuleGraphProcessor.Process(graph, true);
+
+            mockery.VerifyAllExpectationsHaveBeenMet();
+        }
+
+        /// <summary>
+        /// Tests all logging functionality for the CancelProcessing() method.
+        /// </summary>
+        [Test]
+        public void CancelProcessing()
+        {
+            CancellableModule cancellableModule = new CancellableModule();
+            ModuleGraph testModuleGraph = new ModuleGraph();
+            testModuleGraph.AddModule(cancellableModule);
+
+            using (mockery.Ordered)
+            {
+                Expect.Once.On(mockApplicationLogger).Method("Log").With(testModuleGraphProcessor, LogLevel.Information, "Starting module graph processing.");
+                Expect.Once.On(mockApplicationLogger).Method("Log").With(testModuleGraphProcessor, LogLevel.Information, "Processing module 'MathematicsModularFramework.UnitTests.TestModules.CancellableModule'.");
+                Expect.Once.On(mockApplicationLogger).Method("Log").With(testModuleGraphProcessor, LogLevel.Information, "Processing of module 'MathematicsModularFramework.UnitTests.TestModules.CancellableModule' cancelled.");
+            }
+
+            using (AutoResetEvent cancellationThreadSignal = new AutoResetEvent(false))
+            {
+                cancellableModule.GetInputSlot("CancellationThreadSignal").DataValue = cancellationThreadSignal;
+                cancellableModule.GetInputSlot("ThrowExceptionIfCancelledSwitch").DataValue = true;
+                Thread cancellationThread = new Thread
+                (() =>
+                {
+                    cancellationThreadSignal.WaitOne();
+                    testModuleGraphProcessor.CancelProcessing();
+                    cancellationThreadSignal.Set();
+                }
+                );
+                cancellationThread.Start();
+                OperationCanceledException e = Assert.Throws<OperationCanceledException>(delegate
+                {
+                    testModuleGraphProcessor.Process(testModuleGraph, false);
+                });
+            }
 
             mockery.VerifyAllExpectationsHaveBeenMet();
         }

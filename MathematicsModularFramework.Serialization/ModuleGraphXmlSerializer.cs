@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2016 Alastair Wyse (http://www.oraclepermissiongenerator.net/mathematicsmodularframework/)
+ * Copyright 2017 Alastair Wyse (http://www.oraclepermissiongenerator.net/mathematicsmodularframework/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,8 @@ namespace MathematicsModularFramework.Serialization
         protected String slotLinkElementName = "SlotLink";
         /// <summary>The name of the element storing an output slot name in the XML document written and read by the class.</summary>
         protected String outputSlotNameElementName = "OutputSlotName";
-        private const String xmlSchemaFileLocation = @"Resources\ModuleGraph.xsd";
+        /// <summary>The name of the ModuleGraph XML schema file embedded in the assembly.</summary>
+        protected String moduleGraphXmlSchemaResourceStreamName = "Resources.ModuleGraph.xsd";
 
         /// <summary>Maintains a list of mappings between a module, and its equivalent id number in the XML document.</summary>
         private Dictionary<IModule, Int32> moduleToIdMap;
@@ -80,8 +81,8 @@ namespace MathematicsModularFramework.Serialization
         private IXmlDataSerializer dataSerializer;
         /// <summary>Indicates whether the object was instantiated using the test constructor.</summary>
         private Boolean testConstructor = false;
-        /// <summary>The full path to the file containing the schema to use to validate XML during the deserializtion process.</summary>
-        private String xmlSchemaFilePath;
+        /// <summary>The schema to use to validate XML during the deserializtion process.</summary>
+        private XmlSchema moduleGraphXmlSchema;
 
         /// <summary>
         /// Initialises a new instance of the MathematicsModularFramework.Serialization.ModuleGraphXmlSerializer class.
@@ -94,17 +95,14 @@ namespace MathematicsModularFramework.Serialization
             loadedAssemblies = new Dictionary<String, Assembly>();
             dataSerializer = new XmlDataSerializer();
             String currentAssemblyPath = new System.IO.FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName;
-            xmlSchemaFilePath = Path.Combine(currentAssemblyPath, xmlSchemaFileLocation);
-        }
 
-        /// <summary>
-        /// Initialises a new instance of the MathematicsModularFramework.Serialization.ModuleGraphXmlSerializer class.
-        /// </summary>
-        /// <param name="xmlSchemaFilePath">The full path to the file containing the schema to use to validate XML during the deserializtion process.</param>
-        public ModuleGraphXmlSerializer(String xmlSchemaFilePath)
-            : this()
-        {
-            this.xmlSchemaFilePath = xmlSchemaFilePath;
+            // Retrieve the XML schema for serialized ModuleGraph classes from the assembly
+            Assembly serializationAssembly = Assembly.GetExecutingAssembly();
+            ValidationEventHandler xmlSchemaValidationEventHandler = new ValidationEventHandler((object sender, ValidationEventArgs args) => { throw args.Exception; });
+            using (Stream xmlSchemaResourceStream = serializationAssembly.GetManifestResourceStream(typeof(ModuleGraphXmlSerializer), moduleGraphXmlSchemaResourceStreamName))
+            {
+                moduleGraphXmlSchema = XmlSchema.Read(xmlSchemaResourceStream, xmlSchemaValidationEventHandler);
+            }
         }
 
         /// <summary>
@@ -114,18 +112,6 @@ namespace MathematicsModularFramework.Serialization
         public ModuleGraphXmlSerializer(IXmlDataSerializer dataSerializer)
             : this()
         {
-            this.dataSerializer = dataSerializer;
-        }
-
-        /// <summary>
-        /// Initialises a new instance of the MathematicsModularFramework.Serialization.ModuleGraphXmlSerializer class.
-        /// </summary>
-        /// <param name="xmlSchemaFilePath">The full path to the file containing the schema to use to validate XML during the deserializtion process.</param>
-        /// <param name="dataSerializer">A serializer class, used to serialize and deserialize data values in a module's input and output slots.</param>
-        public ModuleGraphXmlSerializer(String xmlSchemaFilePath, IXmlDataSerializer dataSerializer)
-            : this()
-        {
-            this.xmlSchemaFilePath = xmlSchemaFilePath;
             this.dataSerializer = dataSerializer;
         }
 
@@ -201,7 +187,7 @@ namespace MathematicsModularFramework.Serialization
             loadedAssemblies.Clear();
 
             XmlReaderSettings xmlReaderSettings = new XmlReaderSettings();
-            xmlReaderSettings.Schemas.Add(null, xmlSchemaFilePath);
+            xmlReaderSettings.Schemas.Add(moduleGraphXmlSchema);
             xmlReaderSettings.ValidationType = ValidationType.Schema;
             xmlReaderSettings.IgnoreWhitespace = true;
 

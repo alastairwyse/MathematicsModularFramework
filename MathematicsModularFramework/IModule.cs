@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2016 Alastair Wyse (http://www.oraclepermissiongenerator.net/mathematicsmodularframework/)
+ * Copyright 2017 Alastair Wyse (http://www.oraclepermissiongenerator.net/mathematicsmodularframework/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using ApplicationLogging;
 using ApplicationMetrics;
 
@@ -58,6 +59,12 @@ namespace MathematicsModularFramework
 
         /// <include file='InterfaceDocumentationComments.xml' path='doc/members/member[@name="P:MathematicsModularFramework.IModule.MetricLogger"]/*'/>
         IMetricLogger MetricLogger
+        {
+            set;
+        }
+
+        /// <include file='InterfaceDocumentationComments.xml' path='doc/members/member[@name="P:MathematicsModularFramework.IModule.CancellationToken"]/*'/>
+        CancellationToken CancellationToken
         {
             set;
         }

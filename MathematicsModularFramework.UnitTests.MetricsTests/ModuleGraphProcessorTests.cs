@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2016 Alastair Wyse (http://www.oraclepermissiongenerator.net/mathematicsmodularframework/)
+ * Copyright 2017 Alastair Wyse (http://www.oraclepermissiongenerator.net/mathematicsmodularframework/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using NUnit.Framework;
 using NMock2;
 using ApplicationLogging;
@@ -43,6 +44,12 @@ namespace MathematicsModularFramework.UnitTests.MetricsTests
             mockery = new Mockery();
             mockMetricLogger = mockery.NewMock<IMetricLogger>();
             testModuleGraphProcessor = new ModuleGraphProcessor(mockMetricLogger);
+        }
+
+        [TearDown]
+        protected void TearDown()
+        {
+            testModuleGraphProcessor.Dispose();
         }
 
         /// <summary>
@@ -99,6 +106,47 @@ namespace MathematicsModularFramework.UnitTests.MetricsTests
             });
 
             Assert.That(e.Message, NUnit.Framework.Does.StartWith("Processing Exception"));
+
+            mockery.VerifyAllExpectationsHaveBeenMet();
+        }
+
+        /// <summary>
+        /// Tests all logging functionality for the CancelProcessing() method.
+        /// </summary>
+        [Test]
+        public void CancelProcessing()
+        {
+            CancellableModule cancellableModule = new CancellableModule();
+            ModuleGraph testModuleGraph = new ModuleGraph();
+            testModuleGraph.AddModule(cancellableModule);
+
+            using (mockery.Ordered)
+            {
+                Expect.Once.On(mockMetricLogger).Method("Begin").With(IsMetric.Equal(new ModuleGraphProcessingTime()));
+                Expect.Once.On(mockMetricLogger).Method("Begin").With(IsMetric.Equal(new ModuleProcessingTime()));
+                Expect.Once.On(mockMetricLogger).Method("Increment").With(IsMetric.Equal(new ModuleGraphProcessingCancelled()));
+                Expect.Once.On(mockMetricLogger).Method("CancelBegin").With(IsMetric.Equal(new ModuleProcessingTime()));
+                Expect.Once.On(mockMetricLogger).Method("CancelBegin").With(IsMetric.Equal(new ModuleGraphProcessingTime()));
+            }
+
+            using (AutoResetEvent cancellationThreadSignal = new AutoResetEvent(false))
+            {
+                cancellableModule.GetInputSlot("CancellationThreadSignal").DataValue = cancellationThreadSignal;
+                cancellableModule.GetInputSlot("ThrowExceptionIfCancelledSwitch").DataValue = true;
+                Thread cancellationThread = new Thread
+                (() =>
+                {
+                    cancellationThreadSignal.WaitOne();
+                    testModuleGraphProcessor.CancelProcessing();
+                    cancellationThreadSignal.Set();
+                }
+                );
+                cancellationThread.Start();
+                OperationCanceledException e = Assert.Throws<OperationCanceledException>(delegate
+                {
+                    testModuleGraphProcessor.Process(testModuleGraph, false);
+                });
+            }
 
             mockery.VerifyAllExpectationsHaveBeenMet();
         }

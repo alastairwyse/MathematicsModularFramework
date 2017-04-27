@@ -32,9 +32,9 @@
     <DocumentationFile>bin\Release\MathematicsModularFramework.Serialization.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FrameworkAbstraction, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="FrameworkAbstraction, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\FrameworkAbstraction.1.5.0.0\lib\net40\FrameworkAbstraction.dll</HintPath>
+      <HintPath>..\packages\FrameworkAbstraction.1.6.0.0\lib\net40\FrameworkAbstraction.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -70,11 +70,12 @@
     <Content Include="InterfaceDocumentationComments.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="Resources\ModuleGraph.xsd">
+    <EmbeddedResource Include="Resources\ModuleGraph.xsd">
       <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

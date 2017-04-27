@@ -226,6 +226,23 @@ namespace MathematicsModularFramework.Serialization
                 }
             );
 
+            // Add methods for System.Boolean
+            AddDataTypeSupport
+            (
+                typeof(System.Boolean),
+                // Serialization
+                (Object inputObject, XmlWriter xmlWriter) =>
+                {
+                    Boolean inputBoolean = (Boolean)inputObject;
+                    xmlWriter.WriteString(inputBoolean.ToString());
+                },
+                // Deserialization
+                (XmlReader xmlReader) =>
+                {
+                    return Convert.ToBoolean(xmlReader.ReadString());
+                }
+            );
+
             // TODO: Add methods for other basic data types.
         }
 

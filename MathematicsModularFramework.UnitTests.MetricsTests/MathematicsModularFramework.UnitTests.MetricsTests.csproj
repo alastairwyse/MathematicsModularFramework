@@ -37,18 +37,19 @@
     <Reference Include="ApplicationLogging.Adapters">
       <HintPath>..\packages\ApplicationLogging.1.4.0.1\lib\net40\ApplicationLogging.Adapters.dll</HintPath>
     </Reference>
-    <Reference Include="ApplicationMetrics, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ApplicationMetrics, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ApplicationMetrics.1.4.0.0\lib\net40\ApplicationMetrics.dll</HintPath>
+      <HintPath>..\packages\ApplicationMetrics.1.5.0.0\lib\net40\ApplicationMetrics.dll</HintPath>
     </Reference>
-    <Reference Include="FrameworkAbstraction, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="FrameworkAbstraction, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\FrameworkAbstraction.1.5.0.0\lib\net40\FrameworkAbstraction.dll</HintPath>
+      <HintPath>..\packages\FrameworkAbstraction.1.6.0.0\lib\net40\FrameworkAbstraction.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.5\lib\net40-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="NMock2">
+    <Reference Include="NMock2, Version=2.0.0.44, Culture=neutral, PublicKeyToken=37d3be0adc87c2b7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Referenced Libraries\NMock2.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=3.4.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">

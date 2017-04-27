@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2016 Alastair Wyse (http://www.oraclepermissiongenerator.net/mathematicsmodularframework/)
+ * Copyright 2017 Alastair Wyse (http://www.oraclepermissiongenerator.net/mathematicsmodularframework/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,6 +55,15 @@ namespace MathematicsModularFramework.Metrics
         {
             base.name = "ModuleGraphProcessingTime";
             base.description = "The time taken to process a module graph";
+        }
+    }
+
+    public class ModuleGraphProcessingCancelled : CountMetric
+    {
+        public ModuleGraphProcessingCancelled()
+        {
+            base.name = "ModuleGraphProcessingCancelled";
+            base.description = "The number of times processing of a module graph was cancelled";
         }
     }
 

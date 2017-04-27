@@ -42,6 +42,7 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="CancellableModule.cs" />
     <Compile Include="InputSlotCustomTypeModule.cs" />
     <Compile Include="DataInputModule.cs" />
     <Compile Include="ExceptionModule.cs" />

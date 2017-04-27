@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2016 Alastair Wyse (http://www.oraclepermissiongenerator.net/mathematicsmodularframework/)
+ * Copyright 2017 Alastair Wyse (http://www.oraclepermissiongenerator.net/mathematicsmodularframework/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using ApplicationLogging;
 using ApplicationMetrics;
 
@@ -40,9 +41,11 @@ namespace MathematicsModularFramework
         protected IApplicationLogger logger;
         /// <include file='InterfaceDocumentationComments.xml' path='doc/members/member[@name="P:MathematicsModularFramework.IModule.MetricLogger"]/*'/>
         protected IMetricLogger metricLogger;
+        /// <include file='InterfaceDocumentationComments.xml' path='doc/members/member[@name="P:MathematicsModularFramework.IModule.CancellationToken"]/*'/>
+        protected CancellationToken cancellationToken;
 
         /// <include file='InterfaceDocumentationComments.xml' path='doc/members/member[@name="P:MathematicsModularFramework.IModule.Description"]/*'/>
-        /// <exception cref="System.ArgumentException">If the inputted description is null or o length.</exception>
+        /// <exception cref="System.ArgumentException">If the inputted description is null or 0 length.</exception>
         public virtual String Description
         {
             get 
@@ -105,6 +108,15 @@ namespace MathematicsModularFramework
             }
         }
 
+        /// <include file='InterfaceDocumentationComments.xml' path='doc/members/member[@name="P:MathematicsModularFramework.IModule.CancellationToken"]/*'/>
+        public CancellationToken CancellationToken
+        {
+            set
+            {
+                cancellationToken = value;
+            }
+        }
+
         /// <include file='InterfaceDocumentationComments.xml' path='doc/members/member[@name="M:MathematicsModularFramework.IModule.GetInputSlot(System.String)"]/*'/>
         /// <exception cref="System.ArgumentException">If an input slot with the specified name does not exist.</exception>
         public InputSlot GetInputSlot(String name)
@@ -133,6 +145,17 @@ namespace MathematicsModularFramework
             }
 
             throw new ArgumentException("An output slot with name '" + name + "' does not exist on module '" + this.GetType().FullName + "'.", "name");
+        }
+
+        /// <summary>
+        /// Gets whether cancellation has been requested on this module (from the underlying CancellationToken field).
+        /// </summary>
+        protected Boolean IsCancellationRequested
+        {
+            get
+            {
+                return cancellationToken.IsCancellationRequested;
+            }
         }
 
         /// <summary>
@@ -227,6 +250,15 @@ namespace MathematicsModularFramework
             }
 
             outputs.Add(new OutputSlot(name, description, dataType, this));
+        }
+
+        /// <summary>
+        /// Throws an OperationCanceledException if this module has had cancellation requested.
+        /// </summary>
+        /// <exception cref="System.OperationCanceledException">If cancellation has been requested.</exception>
+        protected void ThrowIfCancellationRequested()
+        {
+            cancellationToken.ThrowIfCancellationRequested();
         }
     }
 }
