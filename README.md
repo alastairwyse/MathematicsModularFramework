@@ -9,10 +9,10 @@ MMF was created primarily for financial maths and machine learning, but works wi
 ##### Links
 
 For detailed information including an explanation of the classes see...<br>
-[http://www.oraclepermissiongenerator.net/mathematicsmodularframework/](http://www.oraclepermissiongenerator.net/mathematicsmodularframework/index.html)
+[http://www.alastairwyse.net/mathematicsmodularframework/](http://www.alastairwyse.net/mathematicsmodularframework/index.html)
 
 Sample implementation and use case examples are provided in the [SimpleML](https://github.com/alastairwyse/SimpleML/) project...<br>
-[http://www.oraclepermissiongenerator.net/simpleml/](http://www.oraclepermissiongenerator.net/simpleml/index.html)
+[http://www.alastairwyse.net/simpleml/](http://www.alastairwyse.net/simpleml/index.html)
 
 ##### Notes
 - After opening the solution in Visual Studio, the referenced NuGet packages should be restored using the 'Restore' button in the 'Manage NuGet Packages' window.
